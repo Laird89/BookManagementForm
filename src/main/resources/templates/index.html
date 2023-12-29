@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Book Details</title>
+        <script>
+
+            function confirmDelete() {
+
+                var result = confirm("Are you sure you want to delete this book?");
+
+                if (!result) {
+                    event.preventDefault();
+                }
+
+            }
+        </script>
+            <style>
+
+                table,th,tr,td{
+                    border: 1px solid black;
+                    margin-left: auto;
+                    margin-right: auto;
+                    text-align: center;
+                }
+
+                h1{
+                    text-align: center;
+                }
+
+                .form-center{
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .button-center{
+                    text-align: center;
+                }
+
+                .empty-table-note{
+                    text-align: center;
+                }
+        </style>
+
+    </head>
+
+    <body>
+
+        <h1>Enter Book Details</h1>
+
+        <div class="form-center">
+
+            <form action="#" th:action="@{/addBook}" method="POST" th:object="${book}">
+                <p>Book ISBN Number: <input type="text" th:field="*{isbnNumber}" placeholder="Enter isbn number"> </p>
+                <p>Book Name: <input type="text" th:field="*{bookName}" placeholder="Enter book name"></p>
+                <p>Author Name: <input type="text" th:field="*{authorName}" placeholder="Enter authors name"></p>
+                <div class="button-center">
+                    <p>
+                        <select th:field="*{userRole}">
+                            <option th:each="role : *{userRoles}" th:value="${role}" th:text="${role}"></option>
+                        </select>
+                    </p>
+                    <input type="submit" value="Submit">
+                    <input type="reset" value="Reset">
+                </div>
+            </form>
+
+        </div><br>
+        
+
+        <div th:if="${bookList.empty}">
+            <div class="empty-table-note">No records found...Add some!</div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Book ISBN Number</th>
+                    <th>Book Name</th>
+                    <th>Author Name</th>
+                    <th>Role</th>
+                    <th>Creation Date</th>
+                    <th>Actions</th>
+                </tr>
+            </table>
+        </div>
+
+        <div th:unless="${bookList.empty}">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Book ISBN Number</th>
+                    <th>Book Name</th>
+                    <th>Author Name</th>
+                    <th>Role</th>
+                    <th>Creation Date</th>
+                    <th>Actions</th>
+                </tr>
+                <tr th:each="book: ${bookList}">
+                    <td th:text="${book.id}"></td>
+                    <td th:text="${book.isbnNumber}">12345678910</td>
+                    <td th:text="${book.bookName}">Game of Thrones</td>
+                    <td th:text="${book.authorName}">R.R. Martin</td>
+                    <td th:text="${book.userRole}">ADMIN</td>
+                    <td th:text="${book.creationDate}"></td>
+                    <td>
+                        <div th:if="${book.userRole == 'ADMIN'}">
+                            <a href="#" th:href="|/deleteBook/${book.id}|" onclick="confirmDelete();">delete</a>
+                        </div>
+                        <div th:if="${book.userRole == 'USER'}">
+                            User Role Only!
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+    </body>
+
+</html>
